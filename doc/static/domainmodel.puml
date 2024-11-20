@@ -1,0 +1,69 @@
+@startuml
+!pragma layout smetana
+'https://plantuml.com/sequence-diagram
+
+object StreamingPlatform
+object Medie
+object Film
+object Serie
+object Kategori
+
+'object Crime
+'object War
+'object Drama
+'object Family
+'object Romance
+'object SciFi
+'object Action
+
+object Season
+object Episode
+
+object Bruger
+object SeteFilm
+object GemteFilm
+object Startmenu
+object Hovedmenu
+object LoginSystem
+
+StreamingPlatform *-- Medie : has-a
+StreamingPlatform *-- LoginSystem : has-a
+StreamingPlatform *-- Startmenu : has-a
+StreamingPlatform *-- Hovedmenu : has-a
+StreamingPlatform *-- Bruger : has-a
+
+Bruger *-- SeteFilm : has-a
+Bruger *-- GemteFilm
+
+Medie <|-- Film : is-a
+Medie <|-- Serie : is-a
+
+
+'Kategori <|-- Crime : is-a
+'Kategori <|-- War
+'Kategori <|-- Drama
+'Kategori <|-- Family
+'Kategori <|-- Romance
+'Kategori <|-- SciFi
+'Kategori <|-- Action
+
+
+Serie *-- Season : has-a
+Season *-- Episode : has-a
+Serie : Udgivelsesår
+Serie : Rating
+Serie : Kategori
+
+'Serie *-- Kategori
+
+
+
+'Film *-- Kategori
+
+Film : Udgivelsesår
+Film : Rating
+Film : Kategori
+
+
+@enduml
+

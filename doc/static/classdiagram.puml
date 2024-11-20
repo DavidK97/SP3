@@ -1,0 +1,70 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+!pragma layout smetana
+
+class Main{
++ static void main(String[] args)
+}
+
+class StreamingPlatform{
+
+}
+
+class User {
+ - int age
+ - int ID
+ - String userName
+ - String password
+ - Media[] savedMedia
+ - Media[] playedMedia
+ + {static} int counterID
+}
+
+class StartMenu{
+
+}
+
+class MainMenu{
+
+}
+
+class Movie {
+
+}
+
+class Serie {
+
+}
+
+abstract class Media{
+
+}
+
+package "util" {
+class TextUI {
+
+}
+
+class FileIO{
+ - Scanner scanner
+ - FileWriter fileWriter
+}
+}
+
+Main *-- StreamingPlatform
+StreamingPlatform *-- User
+StreamingPlatform *-- StartMenu
+StreamingPlatform *-- MainMenu
+StreamingPlatform *-- Media
+StreamingPlatform *-- TextUI
+StreamingPlatform *-- FileIO
+
+Media <|-- Serie
+Media <|-- Movie
+
+
+
+
+@enduml
