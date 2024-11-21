@@ -5,64 +5,104 @@
 !pragma layout smetana
 
 class Main{
-+ static void main(String[] args)
++ {static}static void main(String[] args)
 }
 
 class StreamingPlatform{
+'attributes
+- User currentUser
+- TextUI ui
+- FileIO io
+- LoginSystem login
+- ArrayList<Movie> allMovies
+- ArrayList<Series> allSeries
 
+'methods
++ StreamingPlatform()
+- ArrayList<Media> searchCategory(String category)
+- Media searchName(String name)
+- void startMenu()
+- void registerUser()
+- void userLogin(String userName, String password)
+- void setupMedia ()
+- void displaySavedMedia()
+- void displayPlayedMedia()
+- void playMedia(Media media)
+- void saveMedia(Media media)
+- void removeMedia(Media media)
+- void endSession()
 }
 
 class User {
  - int age
- - int ID
+ - int id
  - String userName
  - String password
- - Media[] savedMedia
- - Media[] playedMedia
+ - ArrayList<Media> savedMedia
+ - ArrayList<Media> playedMedia
  + {static} int counterID
+ + User(int age, String userName, String password)
+ - void addSavedMedia()
+ - void addPlayedMedia()
+ - void removeSavedMedia()
 }
 
-class StartMenu{
 
-}
-
-class MainMenu{
-
-}
 
 class Movie {
-
+- String name
+- Set<String> categories
+- float rating
+- int releaseYear
++ Movie(String name, Set<String> categories, float rating, int releaseYear)
 }
 
-class Serie {
-
+class Series {
+- String name
+- Set<String> categories
+- float rating
+- ArrayList<int> releaseYears
+- ArrayList<Season> seasons
++ Series(String name, Set<String> categories, float rating, ArrayList<int> releaseYears, ArrayList<Season> seasons)
 }
 
 abstract class Media{
+- {abstract} String name
+- {abstract} Set<String> categories
+- {abstract} float rating
++ Media(String name, Set<String> categories, float rating)
+}
 
+class LoginSystem{
++ LoginSystem(FileIO)
 }
 
 package "util" {
 class TextUI {
-
+ - Scanner scanner
+ + void displayMsg(String s)
+ + String promptText(String msg)
+ + int promptNumeric(String msg)
 }
 
 class FileIO{
  - Scanner scanner
  - FileWriter fileWriter
+ + ArrayList<String> readData(path)
+ + void saveData(ArrayList<String> userData, String path)
 }
-}
+
 
 Main *-- StreamingPlatform
 StreamingPlatform *-- User
-StreamingPlatform *-- StartMenu
-StreamingPlatform *-- MainMenu
 StreamingPlatform *-- Media
 StreamingPlatform *-- TextUI
 StreamingPlatform *-- FileIO
 
-Media <|-- Serie
+Media <|-- Series
 Media <|-- Movie
+
+'StartMenu *-- Log
 
 
 
