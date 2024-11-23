@@ -13,9 +13,8 @@ class StreamingPlatform{
 - User currentUser
 - TextUI ui
 - FileIO io
-- LoginSystem login
-- ArrayList<Movie> allMovies
-- ArrayList<Series> allSeries
+- ArrayList<User> allUsers
+- ArrayList<Media> allMedia
 
 'methods
 + StreamingPlatform()
@@ -27,7 +26,8 @@ class StreamingPlatform{
 - void setupMedia ()
 - void displaySavedMedia()
 - void displayPlayedMedia()
-- void playMedia(Media media)
+- void playMovie(Movie movie)
+- void playEpisode(Season season, int episode)
 - void saveMedia(Media media)
 - void removeMedia(Media media)
 - void endSession()
@@ -47,7 +47,12 @@ class User {
  - void removeSavedMedia()
 }
 
-
+abstract class Media{
+- String name
+- Set<String> categories
+- float rating
++ Media(String name, Set<String> categories, float rating)
+}
 
 class Movie {
 - String name
@@ -61,20 +66,13 @@ class Series {
 - String name
 - Set<String> categories
 - float rating
-- ArrayList<int> releaseYears
+- int[] releaseYears
 - ArrayList<Season> seasons
 + Series(String name, Set<String> categories, float rating, ArrayList<int> releaseYears, ArrayList<Season> seasons)
 }
 
-abstract class Media{
-- {abstract} String name
-- {abstract} Set<String> categories
-- {abstract} float rating
-+ Media(String name, Set<String> categories, float rating)
-}
-
-class LoginSystem{
-+ LoginSystem(FileIO)
+class Season{
+- int[] episodes
 }
 
 package "util" {
@@ -98,11 +96,10 @@ StreamingPlatform *-- User
 StreamingPlatform *-- Media
 StreamingPlatform *-- TextUI
 StreamingPlatform *-- FileIO
+Series *-- Season
 
 Media <|-- Series
 Media <|-- Movie
-
-'StartMenu *-- Log
 
 
 
