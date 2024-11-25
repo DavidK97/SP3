@@ -11,57 +11,45 @@ import java.io.File;
 
 public class FileIO {
 
-    // Scanner scanner
-    // FileWriter fileWriter
-    // ArrayList<String> readData (path)
-    public static ArrayList<String> readUserData (String path){
+    public static ArrayList<String> readUserData(String path) {
 
         ArrayList<String> userData = new ArrayList<>();
         File file = new File(path);
-
-        try{
-
+        try {
             Scanner scanner = new Scanner(file);
             scanner.nextLine();
 
-            while(scanner.hasNextLine()){
+            while (scanner.hasNextLine()) {
 
                 String line = scanner.nextLine();
                 userData.add(line);
 
             }
 
-        } catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
 
             System.out.println("File was not found...");
-            
+
         }
 
         return userData;
 
     }
 
-    // void saveData (ArrayList<String> userData, String path)
+    public static void saveUserData(List<String> data, String path) {
+        try {
+            // Brug FileWriter til at skrive dataen til filen
+            FileWriter fileWriter = new FileWriter(path, true); // true for at tilføje i stedet for at overskrive
 
-    public static void saveUserData(List<String> data, String path, String header){
-
-        try{
-
-            FileWriter fileWriter = new FileWriter(path);
-            fileWriter.write(header + "\n");
-
-            for (String s : data){
-
+            // Skriv dataen linje for linje
+            for (String s : data) {
                 fileWriter.write(s + "\n");
-
             }
 
-            fileWriter.close();
-
-        }catch(IOException e){
-
+            fileWriter.close(); // Luk fileWriter
+        } catch (IOException e) {
             System.out.println("Something went wrong during the saving process...");
-
+            e.printStackTrace(); // For at få mere detaljerede fejlmeddelelser
         }
     }
 }
