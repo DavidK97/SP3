@@ -1,3 +1,5 @@
+package src;
+
 import java.util.Set;
 
 public abstract class Media {
