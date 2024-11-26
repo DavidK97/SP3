@@ -1,4 +1,3 @@
-package src;
 import java.io.*;
 import java.util.*;
 
@@ -172,13 +171,27 @@ public class StreamingPlatform {
                 String[] values = line.trim().split(";");
 
                 String name = values[0].trim();
-                int[] releaseYear = new int[]{Integer.parseInt(values[1].trim())};
+                int[] releaseYear = new int[2];
+                String[] interval = values[1].split("-");
+                releaseYear[0] = Integer.parseInt(interval[0]);
+                releaseYear[1] = Integer.parseInt(interval[1]);
                 Set<String> categories = new HashSet<>(Arrays.asList(values[2]));
                 float rating = Float.parseFloat(values[3].trim().replace(",", "."));
-                //ArrayList <Season>  seasons = new ArrayList<>();
+                ArrayList <Season>  seasons = new ArrayList<>();
+                String[] seasonList = values[4].split(",");
+                for (String s : seasonList) {
+                    String[] episodeCount = s.split("-");
+                    int[] episodeList = new int[Integer.parseInt(episodeCount[1])-1];
+                    int i = 0;
+                    while (i < Integer.parseInt(episodeCount[1])){
+                        episodeList[i-1] = i;
+                        i++;
+                    }
+                    seasons.add(new Season(episodeList));
+                }
 
-                //Media m = new Series(name, releaseYear, categories, rating, seasons);
-                //allMedia.add(m);
+                Media m = new Series(name, rating, categories, releaseYear, seasons);
+                allMedia.add(m);
             }
         } catch (IOException e) {
             System.out.println("Problem with reading the file");
