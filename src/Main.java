@@ -1,14 +1,18 @@
 package src;
+
+import java.io.File;
+
 public class Main {
 
     public static void main(String[] args) {
-       // File file = new File("data/film.txt");
+        File movieFile = new File("data/film.txt");
+        //File seriesFile = new File("data/series.txt");
+
         StreamingPlatform streamingPlatform = new StreamingPlatform();
-       // streamingPlatform.setupMovies(file);
-       streamingPlatform.startMenu();
-        streamingPlatform.mainMenu();
-       // streamingPlatform.searchName();
-        streamingPlatform.registerUser();
+        streamingPlatform.setupMovies(movieFile);
+        //streamingPlatform.setupSeries(seriesFile);
+        streamingPlatform.startMenu();
+       // streamingPlatform.mainMenu();
 
     }
 
