@@ -3,7 +3,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class StreamingPlatform {
@@ -186,22 +185,29 @@ public void displayPlayedMedia(){
 
 }
 
-public void playMedia(Media media){
-//ui.displayMsg("The movie " + media.getName() + "is now playing");
+    public void playMovie(Movie movie){
+        currentUser.getPlayedMedia().add(movie);
+        ui.displayMsg("The movie " + movie.getName() + " is now playing");
+    }
 
+    public void playSeries(Series series, int season, int episode){
+        currentUser.getPlayedMedia().add(series);
+        ui.displayMsg("Episode " + episode + " from Season " + season + "of" + series.getName() + "is now playing");
+    }
 
+    public void saveMedia(Media media){
+        currentUser.getSavedMedia().add(media);
+        ui.displayMsg(media.getName() + " has been saved");
 }
 
-public void saveMedia(Media media){
-
-
-
-}
-
-public void removeMedia(Media media){
-
-
-
+    public void removeMedia(Media media){
+        for (Media m : currentUser.getSavedMedia()) {
+            if (m.getName().equals(media.getName())) {
+                currentUser.getSavedMedia().remove(m);
+                ui.displayMsg(media.getName() + " has been removed");
+                break;
+            }
+        }
 }
 
 public void endSession(){
