@@ -7,18 +7,17 @@ public class StreamingPlatform {
     private User currentUser;
     private TextUI ui;
     private FileIO io;
-    private ArrayList<Media> allMedia;
-    private ArrayList<User> allUsers;
-    private String file = "data/film.txt";
+    private ArrayList <Media> allMedia;
+    private ArrayList <User> allUsers;
 
-    public StreamingPlatform() {
+    public StreamingPlatform(){
         this.ui = new TextUI();
         this.io = new FileIO();
         this.allMedia = new ArrayList<>();
         this.allUsers = new ArrayList<>();
     }
 
-    public void searchCategory() {
+    public void searchCategory(){
 
         String series = "data/serier.txt";
         String movies = "data/film.txt";
@@ -27,9 +26,8 @@ public class StreamingPlatform {
         String reset = "\u001B[0m";
         String desiredMedia = ui.promptText("Enter your desired media (series/movies): ");
         String desiredGenre = ui.promptText("Enter your desired genre: ");
-        int counter = 1;
 
-        if (desiredMedia.equalsIgnoreCase("series")) {
+        if(desiredMedia.equalsIgnoreCase("series")){
 
             try {
                 BufferedReader bufferedReader = new BufferedReader(new FileReader(series));
@@ -40,19 +38,15 @@ public class StreamingPlatform {
                         continue;
                     }
                     if (values[2].contains(desiredGenre)) {
-                        System.out.println(bold + counter + ". " + "Series: " + values[0] + reset + "\n Year: " + values[1] + "\n Genre: " + values[2] + "\n Rating: " + values[3] + "\n Season + episodes: " + values[4]);
-                        counter++;
+                        System.out.println(bold + "Series: " + values[0] + reset + "\n Year: " + values[1] + "\n Genre: " + values[2] + "\n Rating: " + values[3] + "\n Season + episodes: "+ values[4]);
                     }
                 }
-                int choice = ui.promptNumeric(bold + "Type the name of the the desired series: ");
-
-
-            } catch (FileNotFoundException e) {
+            }catch(FileNotFoundException e){
                 e.printStackTrace();
-            } catch (IOException e) {
+            }catch (IOException e){
                 e.printStackTrace();
             }
-        } else if (desiredMedia.equalsIgnoreCase("movies")) {
+        }else if(desiredMedia.equalsIgnoreCase("movies")){
 
             try {
                 BufferedReader bufferedReader = new BufferedReader(new FileReader(movies));
@@ -62,91 +56,70 @@ public class StreamingPlatform {
                     if (values.length < 2 || values[1].isEmpty()) {
                         continue;
                     }
-                    if (values[2].toLowerCase().contains(desiredGenre)) {
-                        System.out.println(bold + counter + ". " + "Movie: " + values[0] + reset + "\n Year: " + values[1] + "\n Genre: " + values[2] + "\n Rating: " + values[3]);
-                        counter++;
+                    if (values[2].contains(desiredGenre)) {
+                        System.out.println(bold + "Movie: " + values[0] + reset + "\n Year: " + values[1] + "\n Genre: " + values[2] + "\n Rating: " + values[3]);
                     }
                 }
-                int choice = ui.promptNumeric(bold + "Type the name of the the desired movie: ");
-            } catch (FileNotFoundException e) {
+            }catch(FileNotFoundException e){
                 e.printStackTrace();
-            } catch (IOException e) {
+            }catch (IOException e){
                 e.printStackTrace();
             }
         }
     }
 
 
-    public void searchName() {
+    public void searchName(){
 
-        String series = "data/serier.txt";
-        String movies = "data/film.txt";
-        String line = "";
-        String bold = "\u001B[1m";
-        String reset = "\u001B[0m";
-        String desiredMedia = ui.promptText("Enter your desired media (series/movies): ");
-        String desiredName = ui.promptText("Search for a specific name: ");
-        int counter = 1;
+    String series = "data/serier.txt";
+    String movies = "data/film.txt";
+    String line = "";
+    String bold = "\u001B[1m";
+    String reset = "\u001B[0m";
+    String desiredMedia = ui.promptText("Enter your desired media (series/movies): ");
+    String desiredName = ui.promptText("Search for a specific name: ");
 
-        if (desiredMedia.equalsIgnoreCase("series")) {
+    if(desiredMedia.equalsIgnoreCase("series")){
 
-            try {
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(series));
-                while ((line = bufferedReader.readLine()) != null) {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(series));
+            while ((line = bufferedReader.readLine()) != null) {
 
-                    String[] values = line.split(";");
-                    if (values.length < 2 || values[1].isEmpty()) {
-                        continue;
-                    }
-                    if (values[0].toLowerCase().contains(desiredName)) {
-                        System.out.println(bold + counter + ". " + "Series: " + values[0] + reset + "\n Year: " + values[1] + "\n Genre: " + values[2] + "\n Rating: " + values[3] + "\n Season + episodes: " + values[4]);
-                        counter++;
-                    }
+                String[] values = line.split(";");
+                if (values.length < 2 || values[1].isEmpty()) {
+                    continue;
                 }
-                String choice = ui.promptText(bold + "Type the name of the desired series: ");
-                searchName();
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (desiredMedia.equalsIgnoreCase("movies")) {
-
-            try {
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(movies));
-                while ((line = bufferedReader.readLine()) != null) {
-
-                    String[] values = line.split(";");
-                    if (values.length < 2 || values[1].isEmpty()) {
-                        continue;
-                    }
-                    if (values[0].toLowerCase().contains(desiredName)) {
-                        System.out.println(bold + counter + ". " + "Movie: " + values[0] + reset + "\n Year: " + values[1] + "\n Genre: " + values[2] + "\n Rating: " + values[3]);
-                        counter++;
-                    }
-
-                   /* switch(choice){
-
-                        case 1:
-                        saveMedia();
-                        break;
-                        case 2:
-                        playMedia();
-                        break;
-                        default:
-
-                    }*/
+                if (values[0].contains(desiredName)) {
+                    System.out.println(bold + "Series: " + values[0] + reset + "\n Year: " + values[1] + "\n Genre: " + values[2] + "\n Rating: " + values[3] + "\n Season + episodes: "+ values[4]);
                 }
-                int choice = ui.promptNumeric(bold + "Type the name of the the desired movie: ");
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }else if(desiredMedia.equalsIgnoreCase("movies")){
+
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(movies));
+            while ((line = bufferedReader.readLine()) != null) {
+
+                String[] values = line.split(";");
+                if (values.length < 2 || values[1].isEmpty()) {
+                    continue;
+                }
+                if (values[0].contains(desiredName)) {
+                    System.out.println(bold + "Movie: " + values[0] + reset + "\n Year: " + values[1] + "\n Genre: " + values[2] + "\n Rating: " + values[3]);
+                }
+            }
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
         }
     }
+}
+
 
 
     public void startMenu() {
@@ -202,7 +175,6 @@ public class StreamingPlatform {
         User user = new User(userName, password, age);
         allUsers.add(user);
 
-
         List<String> userData = new ArrayList<>();
         userData.add(user.getUserName() + "," + user.getPassword() + "," + user.getAge());
 
@@ -211,7 +183,7 @@ public class StreamingPlatform {
     }
 
 
-    public boolean userLogin() {
+public boolean userLogin() {
         String line = "";
         String userName = ui.promptText("Enter your username: ");
         String password = ui.promptText("Enter your password: ");
@@ -224,8 +196,7 @@ public class StreamingPlatform {
 
                 if (values[0].equals(userName) && values[1].equals(password)) {
                     ui.displayMsg("Welcome " + userName);
-                        return true;
-
+                    return true;
                 }
             }
         } catch (IOException e) {
@@ -259,63 +230,73 @@ public void setupMovies(File file) {
 
 public void setupSeries(File file){
 
-    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
 
-            String[] values = line.trim().split(";");
+                String[] values = line.trim().split(";");
 
-            String name = values[0].trim();
-            int [] releaseYear = new int []{Integer.parseInt(values[1].trim())};
-            Set<String> categories = new HashSet<>(Arrays.asList(values[2]));
-            float rating = Float.parseFloat(values[3].trim().replace(",","."));
-          //  ArrayList <Season>  seasons = new ArrayList<>();
+                String name = values[0].trim();
+                int [] releaseYear = new int []{Integer.parseInt(values[1].trim())};
+                Set<String> categories = new HashSet<>(Arrays.asList(values[2]));
+                float rating = Float.parseFloat(values[3].trim().replace(",","."));
+                //  ArrayList <Season>  seasons = new ArrayList<>();
 
-            //Media m = new Series(name, releaseYear, categories, rating, seasons);
-            //allMedia.add(m);
+                //Media m = new Series(name, releaseYear, categories, rating, seasons);
+                //allMedia.add(m);
+            }
+        } catch (IOException e) {
+            System.out.println("Problem with reading the file");
         }
-    } catch (IOException e) {
-        System.out.println("Problem with reading the file");
     }
-}
-
-
-
-
-
 
 
 public void displaySavedMedia(){
 
-        
+for(Media m : currentUser.savedMedia){
+    System.out.println(m);
+}
+
 }
 
 public void displayPlayedMedia(){
 
-
-
-}
-
-public void playMedia(Media media){
-//ui.displayMsg("The movie " + media.getName() + "is now playing");
-
+    for(Media m : currentUser.playedMedia){
+        System.out.println(m);
+    }
 
 }
+
+
+public void playMovie(Movie movie){
+        currentUser.getPlayedMedia().add(movie);
+        ui.displayMsg("The movie " + movie.getName() + " is now playing");
+    }
+
+public void playSeries(Series series, int season, int episode){
+        currentUser.getPlayedMedia().add(series);
+        ui.displayMsg("Episode " + episode + " from Season " + season + "of" + series.getName() + "is now playing");
+    }
 
 public void saveMedia(Media media){
-
-
-}
+        currentUser.getSavedMedia().add(media);
+        ui.displayMsg(media.getName() + " has been saved");
+    }
 
 public void removeMedia(Media media){
+        for (Media m : currentUser.getSavedMedia()) {
+            if (m.getName().equals(media.getName())) {
+                currentUser.getSavedMedia().remove(m);
+                ui.displayMsg(media.getName() + " has been removed");
+                break;
+            }
+        }
+    }
 
-
-
-}
 
 public void endSession(){
 
 
-}
+    }
 
 }

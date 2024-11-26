@@ -1,7 +1,6 @@
 package src;
-
-
 import java.util.ArrayList;
+
 
 public class User {
     private String userName;
