@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.foreign.PaddingLayout;
 import java.util.*;
 
 
@@ -8,16 +9,47 @@ public class StreamingPlatform {
     private FileIO io;
     private ArrayList<Media> allMedia;
     private ArrayList<User> allUsers;
+    ArrayList <Media> searchMedia;
 
     public StreamingPlatform() {
         this.ui = new TextUI();
         this.io = new FileIO();
         this.allMedia = new ArrayList<>();
         this.allUsers = new ArrayList<>();
+        this.searchMedia = new ArrayList<>();
+
     }
 
     public void searchCategory() {
+        String choice = ui.promptText("Type the name of desired category");
+        try {
+            for (Media m : allMedia) {
+                if (m.getName().toLowerCase().contains(choice.toLowerCase())) { //Skal pege på category og ikke name
+                    System.out.println(m);
 
+                    ui.displayMsg("Please choose an action");  //Bør måske være en metode for sig selv så vi kan bruge de options andre steder
+                    int choice1 = ui.promptNumeric(
+                            "  1) Play media \n" +
+                                    "2) Add to watchlist \n" +
+                                    "3) Return to main menu");
+                    switch (choice1) {
+                        case 1:
+                            playMovie((Movie) m);
+                            break;
+                        case 2:
+                            saveMedia(m);
+                            break;
+                        case 3:
+                            mainMenu();
+                            break;
+                    }
+                }
+            }
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+            System.out.println("No category found with the name: " + choice);
+            searchCategory();
+        }
     }
 
 
@@ -27,23 +59,25 @@ public class StreamingPlatform {
             for (Media m : allMedia) {
                 if (m.getName().toLowerCase().contains(choice.toLowerCase())) {
                     System.out.println(m);
+
+                    ui.displayMsg("Please choose an action");  //Bør måske være en metode for sig selv så vi kan bruge de options andre steder
+                    int choice1 = ui.promptNumeric(
+                            "  1) Play media \n" +
+                                    "2) Add to watchlist \n" +
+                                    "3) Return to main menu");
+                    switch (choice1) {
+                        case 1:
+                            playMovie((Movie) m);
+                            break;
+                        case 2:
+                            saveMedia(m);
+                            break;
+                        case 3:
+                            mainMenu();
+                            break;
+                    }
                 }
             }
-            ui.displayMsg("\n1) Play media\n" +
-                           "2) Saved media\n" +
-                           "3) Add to watchlist");
-/*
-            int choice1 = ui.promptNumeric("Please type the number of choice");
-            switch(choice1) {
-
-                case 1:
-                    currentUser.addPlayedMedia(m);
-
-                case 2:
-                    currentUser.addSavedMedia(m);
-            }
-
- */
         } catch (NullPointerException e) {
             System.out.println(e.getMessage());
             System.out.println("No media found with the name: " + choice);
@@ -109,6 +143,7 @@ public class StreamingPlatform {
         int age = ui.promptNumeric("Enter your age");
 
         User user = new User(userName, password, age);
+        currentUser = user;
         allUsers.add(user);
 
         List<String> userData = new ArrayList<>();
@@ -133,6 +168,7 @@ public class StreamingPlatform {
 
                 if (values[0].equals(userName) && values[1].equals(password)) {
                     ui.displayMsg("Welcome " + bold + userName+"!");
+                    currentUser = new User(userName, password, Integer.parseInt(values[2]));
                     return true;
                 }
             }
@@ -206,7 +242,6 @@ public void displaySavedMedia() {
             }
         } catch (NullPointerException e) {
             System.out.println("\n---You have no saved media!--- \n ");
-            mainMenu();
         }
     }
 
@@ -217,7 +252,6 @@ public void displayPlayedMedia() {
             }
         } catch (NullPointerException e) {
             System.out.println("\n---You have no watched media!--- \n");
-            mainMenu();
         }
     }
 
@@ -225,6 +259,7 @@ public void displayPlayedMedia() {
 public void playMovie(Movie movie){
         currentUser.getPlayedMedia().add(movie);
         ui.displayMsg("The movie " + movie.getName() + " is now playing");
+        endSession();
     }
 
 public void playSeries(Series series, int season, int episode){
@@ -253,4 +288,7 @@ public void endSession(){
         System.exit(0);
     }
 
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
 }

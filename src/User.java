@@ -8,6 +8,7 @@ public class User {
     ArrayList <Media> savedMedia;
     ArrayList <Media> playedMedia;
 
+
     public User(String userName, String password, int age) {
         this.age = age;
         this.userName = userName;
@@ -23,9 +24,7 @@ public class User {
     }
 
 
-
     public void addPlayedMedia(Media media){
-
         this.playedMedia.add(media);
 
 
