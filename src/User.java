@@ -26,8 +26,6 @@ public class User {
 
     public void addPlayedMedia(Media media){
         this.playedMedia.add(media);
-
-
     }
 
     public void removeSavedMedia(Media media){
