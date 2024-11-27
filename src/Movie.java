@@ -1,22 +1,22 @@
 import java.util.Set;
 
 public class Movie extends Media {
-    private int releaseYear;
+    private String releaseYear;
 
     // Constructor
-    Movie(String name, int releaseYear, Set<String> categories, float rating) {
+    Movie(String name, String releaseYear, Set<String> categories, float rating) {
         super(name, rating, categories);
         this.releaseYear = releaseYear;
     }
 
     // Getter for releaseYear
-    public int getReleaseYear() {
+    public String getReleaseYear() {
         return releaseYear;
     }
 
     // toString method
     @Override
     public String toString() {
-        return "Title: " + name + ", Year: " + releaseYear + ", Categories: " + categories + ", Rating: " + rating;
+        return "\nTitle: " + name + ", Year: " + releaseYear + ", Categories: " + categories + ", Rating: " + rating+"\n";
     }
 }

@@ -4,4 +4,12 @@ public class Season {
     Season(int[] episodes) {
         this.episodes = episodes;
     }
+
+    public int[] getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(int[] episodes) {
+        this.episodes = episodes;
+    }
 }

@@ -1,5 +1,4 @@
 import java.io.*;
-import java.lang.foreign.PaddingLayout;
 import java.util.*;
 
 
@@ -20,37 +19,7 @@ public class StreamingPlatform {
 
     }
 
-    public void searchCategory() {
-        String choice = ui.promptText("Type the name of desired category");
-        try {
-            for (Media m : allMedia) {
-                if (m.getName().toLowerCase().contains(choice.toLowerCase())) { //Skal pege på category og ikke name
-                    System.out.println(m);
-
-                    ui.displayMsg("Please choose an action");  //Bør måske være en metode for sig selv så vi kan bruge de options andre steder
-                    int choice1 = ui.promptNumeric(
-                            "  1) Play media \n" +
-                                    "2) Add to watchlist \n" +
-                                    "3) Return to main menu");
-                    switch (choice1) {
-                        case 1:
-                            playMovie((Movie) m);
-                            break;
-                        case 2:
-                            saveMedia(m);
-                            break;
-                        case 3:
-                            mainMenu();
-                            break;
-                    }
-                }
-            }
-        } catch (NullPointerException e) {
-            System.out.println(e.getMessage());
-            System.out.println("No category found with the name: " + choice);
-            searchCategory();
-        }
-    }
+    public void searchCategory() {}
 
 
     public void searchName() {
@@ -62,16 +31,29 @@ public class StreamingPlatform {
 
                     ui.displayMsg("Please choose an action");  //Bør måske være en metode for sig selv så vi kan bruge de options andre steder
                     int choice1 = ui.promptNumeric(
-                            "  1) Play media \n" +
+                                "1) Play media \n" +
                                     "2) Add to watchlist \n" +
                                     "3) Return to main menu");
                     switch (choice1) {
                         case 1:
-                            playMovie((Movie) m);
+                            if (m instanceof Movie) {
+                                playMovie((Movie) m);
+                                break;
+                            }else if(m instanceof Series) {
+                                int seasonChoice = ui.promptNumeric("Choose the season");
+                                int episodeChoice = ui.promptNumeric("Choose the episode");
+                                playSeries((Series) m, seasonChoice, episodeChoice);
+                                break;
+                            }
                             break;
                         case 2:
-                            saveMedia(m);
-                            break;
+                            if (m instanceof Movie) {
+                                saveMovie((Movie) m);
+                                break;
+                            }else if(m instanceof Series) {
+                                saveSeries((Series) m);
+                                break;
+                            }
                         case 3:
                             mainMenu();
                             break;
@@ -89,8 +71,9 @@ public class StreamingPlatform {
 
     public void startMenu() {
         String bold = "\u001B[1m";
-        ui.displayMsg("Welcome to the Streaming Platform");
-        int choice = ui.promptNumeric("If you want to login with an existing user, press 1. If you want to create a new user, press 2");
+        ui.displayMsg("\nWelcome to the " + bold + "Streaming Platform");
+        int choice = ui.promptNumeric(bold + "\nYou have the following options: \n"+"1) Log in \n"+
+                                               "2) Create an account");
         if (choice == 1) {
             if (userLogin() == true) {
                 mainMenu();
@@ -109,8 +92,8 @@ public class StreamingPlatform {
         int choice = ui.promptNumeric(bold + "You have the following options: \n " +
                 "1) Search for a movie or serie \n " +
                 "2) Search by category \n " +
-                "3) See your saved wacthlist \n " +
-                "4) See your list of watched movies \n " +
+                "3) See your saved watchlist \n " +
+                "4) See your list of watched media \n " +
                 "5) End the program");
 
         switch (choice) {
@@ -187,7 +170,7 @@ public class StreamingPlatform {
                 String[] values = line.trim().split(";");
 
                 String name = values[0].trim();
-                int releaseYear = Integer.parseInt(values[1].trim());
+                String releaseYear = (values[1].trim());
                 Set<String> categories = new HashSet<>(Arrays.asList(values[2]));
                 float rating = Float.parseFloat(values[3].trim().replace(",", "."));
 
@@ -203,73 +186,126 @@ public class StreamingPlatform {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-
                 String[] values = line.trim().split(";");
-
-                String name = values[0].trim();
-                int[] releaseYear = new int[2];
-                String[] interval = values[1].split("-");
-                releaseYear[0] = Integer.parseInt(interval[0]);
-                releaseYear[1] = Integer.parseInt(interval[1]);
-                Set<String> categories = new HashSet<>(Arrays.asList(values[2]));
-                float rating = Float.parseFloat(values[3].trim().replace(",", "."));
-                ArrayList <Season>  seasons = new ArrayList<>();
-                String[] seasonList = values[4].split(",");
-                for (String s : seasonList) {
-                    String[] episodeCount = s.split("-");
-                    int[] episodeList = new int[Integer.parseInt(episodeCount[1])-1];
-                    int i = 0;
-                    while (i < Integer.parseInt(episodeCount[1])){
-                        episodeList[i-1] = i;
-                        i++;
-                    }
-                    seasons.add(new Season(episodeList));
+                if (values.length < 5) {
+                    System.out.println("Skipping line due to insufficient data: " + line);
+                    continue; // Skip lines with missing data
                 }
 
-                Media m = new Series(name, rating, categories, releaseYear, seasons);
+                String name = values[0].trim();
+                String releaseYear = values[1].trim();
+
+                Set<String> categories = new HashSet<>(Arrays.asList(values[2].split(",")));
+                float rating = Float.parseFloat(values[3].trim().replace(",", "."));
+                ArrayList<Season> seasons = new ArrayList<>();
+
+                if (!values[4].isEmpty()) {
+                    String[] seasonList = values[4].split(",");
+                    for (String s : seasonList) {
+                        String[] episodeCount = s.split("-");
+                        if (episodeCount.length < 2) {
+                            System.out.println("Skipping invalid season data: " + s);
+                            continue;
+                        }
+
+                        int episodeCountNum = Integer.parseInt(episodeCount[1]);
+                        int[] episodeList = new int[episodeCountNum];
+                        for (int i = 0; i < episodeCountNum; i++) {
+                            episodeList[i] = i + 1;
+                        }
+                        seasons.add(new Season(episodeList));
+                    }
+                }
+
+                Media m = new Series(name, releaseYear, categories, rating, seasons);
                 allMedia.add(m);
             }
         } catch (IOException e) {
             System.out.println("Problem with reading the file");
+        } catch (NumberFormatException e) {
+            System.out.println("Problem with number parsing: " + e.getMessage());
         }
     }
 
 
 public void displaySavedMedia() {
+
         try {
-            for (Media m : currentUser.savedMedia) {
-                System.out.println(m);
+            if (currentUser.savedMedia == null || currentUser.savedMedia.isEmpty()) {
+                System.out.println("\n---You have no saved media!--- \n");
+                mainMenu();
+            } else {
+                for (Media m : currentUser.savedMedia) {
+                    System.out.println(m);
+                }
+                mainMenu();
             }
+          /*  int choice = ui.promptNumeric("1) Play media \n" +
+                    "2) Remove from watchlist \n" +
+                    "3) Return to main menu");
+
+            switch (choice){
+                case 1:
+                    if (m instanceof Movie) {
+                        playMovie((Movie) m);
+                        break;
+                    }else if(m instanceof Series) {
+                        int seasonChoice = ui.promptNumeric("Choose the season");
+                        int episodeChoice = ui.promptNumeric("Choose the episode");
+                        playSeries((Series) m, seasonChoice, episodeChoice);
+                        break;
+                    };
+                case 2:
+                    removeMedia();
+
+                }
+           */
+
+        mainMenu();
         } catch (NullPointerException e) {
-            System.out.println("\n---You have no saved media!--- \n ");
+            System.out.println("\n---Error: User or saved media is null!--- \n");
         }
+
+
     }
 
 public void displayPlayedMedia() {
-        try {
+    try {
+        if (currentUser.playedMedia == null || currentUser.playedMedia.isEmpty()) {
+            System.out.println("\n---You have no saved media!--- \n");
+            mainMenu();
+        } else {
             for (Media m : currentUser.playedMedia) {
                 System.out.println(m);
             }
-        } catch (NullPointerException e) {
-            System.out.println("\n---You have no watched media!--- \n");
+            mainMenu();
         }
+    } catch (NullPointerException e) {
+        System.out.println("\n---Error: User or saved media is null!--- \n");
     }
+}
 
 
 public void playMovie(Movie movie){
         currentUser.getPlayedMedia().add(movie);
-        ui.displayMsg("The movie " + movie.getName() + " is now playing");
-        endSession();
+        ui.displayMsg("The media " + movie.getName() + " is now playing");
+        mainMenu();
     }
 
 public void playSeries(Series series, int season, int episode){
         currentUser.getPlayedMedia().add(series);
-        ui.displayMsg("Episode " + episode + " from Season " + season + "of" + series.getName() + "is now playing");
+        ui.displayMsg("Episode " + episode + " from Season " + season + " of " + series.getName() + " is now playing");
+        mainMenu();
     }
 
-public void saveMedia(Media media){
-        currentUser.getSavedMedia().add(media);
-        ui.displayMsg(media.getName() + " has been saved");
+public void saveMovie(Movie movie){
+        currentUser.getSavedMedia().add(movie);
+        ui.displayMsg(movie.getName() + " has been saved!");
+    }
+
+    public void saveSeries(Series series){
+        currentUser.getSavedMedia().add(series);
+        ui.displayMsg(series.getName()+ " has been saved!");
     }
 
 public void removeMedia(Media media){
@@ -286,9 +322,5 @@ public void removeMedia(Media media){
 public void endSession(){
         System.out.println("Ending program...");
         System.exit(0);
-    }
-
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
     }
 }
