@@ -19,7 +19,22 @@ public class StreamingPlatform {
 
     }
 
-    public void searchCategory() {}
+    public void searchCategory() {
+        String choice = ui.promptText("What is your desired category?");
+        try {
+            for (Media m : allMedia) {
+                if (m.getCategories().contains(" " + choice)) {
+                    System.out.print(m);
+                }
+            }
+            System.out.println();
+            mainMenu();
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+            System.out.println(choice + " is not a valid category");
+            searchCategory();
+        }
+    }
 
 
     public void searchName() {
@@ -31,9 +46,9 @@ public class StreamingPlatform {
 
                     ui.displayMsg("Please choose an action");  //Bør måske være en metode for sig selv så vi kan bruge de options andre steder
                     int choice1 = ui.promptNumeric(
-                                "1) Play media \n" +
-                                    "2) Add to watchlist \n" +
-                                    "3) Return to main menu");
+                                " 1) Play media \n" +
+                                    "  2) Add to watchlist \n" +
+                                    "  3) Return to main menu");
                     switch (choice1) {
                         case 1:
                             if (m instanceof Movie) {
@@ -189,7 +204,7 @@ public class StreamingPlatform {
                 String[] values = line.trim().split(";");
                 if (values.length < 5) {
                     System.out.println("Skipping line due to insufficient data: " + line);
-                    continue; // Skip lines with missing data
+                    continue;
                 }
 
                 String name = values[0].trim();
