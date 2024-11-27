@@ -19,7 +19,22 @@ public class StreamingPlatform {
 
     }
 
-    public void searchCategory() {}
+    public void searchCategory() {
+        String choice = ui.promptText("What is your desired category?");
+        try {
+            for (Media m : allMedia) {
+                if (m.getCategories().contains(" " + choice)) {
+                    System.out.print(m);
+                }
+            }
+            System.out.println();
+            mainMenu();
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+            System.out.println(choice + " is not a valid category");
+            searchCategory();
+        }
+    }
 
 
     public void searchName() {
