@@ -287,7 +287,7 @@ public void displaySavedMedia() {
 public void displayPlayedMedia() {
     try {
         if (currentUser.playedMedia == null || currentUser.playedMedia.isEmpty()) {
-            System.out.println("\n---You have no saved media!--- \n");
+            System.out.println("\n---You have no watched media!--- \n");
             mainMenu();
         } else {
             for (Media m : currentUser.playedMedia) {
@@ -296,7 +296,7 @@ public void displayPlayedMedia() {
             mainMenu();
         }
     } catch (NullPointerException e) {
-        System.out.println("\n---Error: User or saved media is null!--- \n");
+        System.out.println("\n---Error: User or watched media is null!--- \n");
     }
 }
 
@@ -316,11 +316,13 @@ public void playSeries(Series series, int season, int episode){
 public void saveMovie(Movie movie){
         currentUser.getSavedMedia().add(movie);
         ui.displayMsg(movie.getName() + " has been saved!");
+        mainMenu();
     }
 
     public void saveSeries(Series series){
         currentUser.getSavedMedia().add(series);
         ui.displayMsg(series.getName()+ " has been saved!");
+        mainMenu();
     }
 
 public void removeMedia(Media media){

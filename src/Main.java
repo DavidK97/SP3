@@ -10,6 +10,5 @@ public class Main {
         streamingPlatform.setupMovies(movieFile);
         streamingPlatform.setupSeries(seriesFile);
         streamingPlatform.startMenu();
-        streamingPlatform.mainMenu();
     }
 }
