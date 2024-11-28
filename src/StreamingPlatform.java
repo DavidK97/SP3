@@ -22,10 +22,15 @@ public class StreamingPlatform {
     public void searchCategory() {
         String choice = ui.promptText("What is your desired category?");
         try {
+            boolean found = false;
             for (Media m : allMedia) {
                 if (m.getCategories().contains(" " + choice)) {
                     System.out.print(m);
+                    found = true;
                 }
+            }
+            if (!found) {
+                System.out.println(choice + " is not a valid category");
             }
             System.out.println();
             mainMenu();
@@ -105,7 +110,7 @@ public class StreamingPlatform {
     public void mainMenu() {
         String bold = "\u001B[1m";
         int choice = ui.promptNumeric(bold + "You have the following options: \n " +
-                "1) Search for a movie or serie \n " +
+                "1) Search for a movie or series \n " +
                 "2) Search by category \n " +
                 "3) See your saved watchlist \n " +
                 "4) See your list of watched media \n " +
@@ -303,7 +308,7 @@ public void displayPlayedMedia() {
 
 public void playMovie(Movie movie){
         currentUser.getPlayedMedia().add(movie);
-        ui.displayMsg("The media " + movie.getName() + " is now playing");
+        ui.displayMsg("The movie " + movie.getName() + " is now playing");
         mainMenu();
     }
 

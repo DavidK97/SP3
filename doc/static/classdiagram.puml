@@ -47,26 +47,27 @@ class User {
 
 abstract class Media{
 - String name
+- String releaseYear
 - Set<String> categories
 - float rating
-+ Media(String name, Set<String> categories, float rating)
++ Media(String name, String releaseYear, Set<String> categories, float rating)
 }
 
 class Movie {
 - String name
+- String releaseYear
 - Set<String> categories
 - float rating
-- int releaseYear
-+ Movie(String name, Set<String> categories, float rating, int releaseYear)
++ Movie(String name, String releaseYear, Set<String> categories, float rating)
 }
 
 class Series {
 - String name
+- String releaseYear
 - Set<String> categories
 - float rating
-- int[] releaseYears
 - ArrayList<Season> seasons
-+ Series(String name, Set<String> categories, float rating, ArrayList<int> releaseYears, ArrayList<Season> seasons)
++ Series(String name, String releaseYear, Set<String> categories, float rating, ArrayList<Season> seasons)
 }
 
 class Season{
