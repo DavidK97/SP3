@@ -1,15 +1,15 @@
 public class Season {
-    int[] episodes;
+    int episodes;
 
-    Season(int[] episodes) {
+    Season(int episodes) {
         this.episodes = episodes;
     }
 
-    public int[] getEpisodes() {
+    public int getEpisodes() {
         return episodes;
     }
 
-    public void setEpisodes(int[] episodes) {
+    public void setEpisodes(int episodes) {
         this.episodes = episodes;
     }
 }

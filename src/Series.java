@@ -30,7 +30,6 @@ public class Series extends Media {
     }
 
 
-
     @Override
     public String toString() {
         return "\nTitle: " + name + ", Year: " + releaseYears + ", Categories: " + categories + ", Rating: " + rating + ", Seasons: " + seasons.size()+"\n";

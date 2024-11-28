@@ -1,0 +1,111 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+!pragma layout smetana
+
+class Main{
++ {static}static void main(String[] args)
+}
+
+class StreamingPlatform{
+'attributes
+- User currentUser
+- TextUI ui
+- FileIO io
+- ArrayList<User> allUsers
+- ArrayList<Media> allMedia
+
+'methods
++ StreamingPlatform()
++ void searchCategory()
++ void searchName()
++ void startMenu()
++ void mainMenu()
++ void registerUser()
++ boolean userLogin()
++ void setupMovies(File file)
++ void setupSeries(File file)
++ void displaySavedMedia()
++ void displayPlayedMedia()
++ void playMovie(Movie movie)
++ void playEpisode(Series series, int season, int episode)
++ void saveMovie(Movie movie)
++ void saveSeries (Series series)
++ void removeMedia(Media media)
++ void endSession()
+}
+
+class User {
+ - int age
+ - String userName
+ - String password
+ - ArrayList<Media> savedMedia
+ - ArrayList<Media> playedMedia
+
+ + User(int age, String userName, String password)
+ + void addSavedMedia(Media media)
+ + void addPlayedMedia(Media media)
+ + void removeSavedMedia(Media Media)
+}
+
+abstract class Media{
+# String name
+# Set<String> categories
+# float rating
++ Media(String name, Set<String> categories, float rating)
+}
+
+class Movie{
+- String name
+- Set<String> categories
+- float rating
+- String releaseYear
++ Movie(String name, Set<String> categories, float rating, String releaseYear)
+}
+
+class Series {
+- String name
+- Set<String> categories
+- float rating
+- String releaseYears
+- ArrayList<Season> seasons
++ Series(String name, Set<String> categories, float rating, String releaseYears, ArrayList<Season> seasons)
+}
+
+class Season{
+- int episodes
+
++ Season (int episodes)
+}
+
+package "util" {
+class TextUI {
+ - Scanner scanner
+ + void displayMsg(String msg)
+ + String promptText(String msg)
+ + int promptNumeric(String msg)
+}
+
+class FileIO{
+ - Scanner scanner
+ - FileWriter fileWriter
+ + static ArrayList<String> readUserData(String path)
+ + static void saveUserData(List<String> userData, String path)
+}
+
+
+Main *-- StreamingPlatform
+StreamingPlatform *-- User
+StreamingPlatform *-- Media
+StreamingPlatform *-- TextUI
+StreamingPlatform *-- FileIO
+Series *-- Season
+
+Media <|-- Series
+Media <|-- Movie
+
+
+
+
+@enduml

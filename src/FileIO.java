@@ -10,7 +10,6 @@ import java.io.File;
 public class FileIO {
 
     public static ArrayList<String> readUserData(String path) {
-
         ArrayList<String> userData = new ArrayList<>();
         File file = new File(path);
         try {
@@ -18,20 +17,14 @@ public class FileIO {
             scanner.nextLine();
 
             while (scanner.hasNextLine()) {
-
                 String line = scanner.nextLine();
                 userData.add(line);
-
             }
 
         } catch (FileNotFoundException e) {
-
             System.out.println("File was not found...");
-
         }
-
         return userData;
-
     }
 
     public static void saveUserData(List<String> data, String path) {

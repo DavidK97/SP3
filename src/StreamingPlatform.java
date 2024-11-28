@@ -8,27 +8,31 @@ public class StreamingPlatform {
     private FileIO io;
     private ArrayList<Media> allMedia;
     private ArrayList<User> allUsers;
-    ArrayList <Media> searchMedia;
+
 
     public StreamingPlatform() {
         this.ui = new TextUI();
         this.io = new FileIO();
         this.allMedia = new ArrayList<>();
         this.allUsers = new ArrayList<>();
-        this.searchMedia = new ArrayList<>();
-
     }
 
     public void searchCategory() {
         String choice = ui.promptText("What is your desired category?");
         try {
+            boolean found = false;
             for (Media m : allMedia) {
                 if (m.getCategories().contains(" " + choice)) {
                     System.out.print(m);
+                    found = true;
                 }
             }
+            if (!found) {
+                System.out.println(choice + " is not a valid category");
+                mainMenu();
+            }
             System.out.println();
-            mainMenu();
+            searchName();
         } catch (NullPointerException e) {
             System.out.println(e.getMessage());
             System.out.println(choice + " is not a valid category");
@@ -44,9 +48,9 @@ public class StreamingPlatform {
                 if (m.getName().toLowerCase().contains(choice.toLowerCase())) {
                     System.out.println(m);
 
-                    ui.displayMsg("Please choose an action");  //Bør måske være en metode for sig selv så vi kan bruge de options andre steder
+                    ui.displayMsg("Please choose an action");
                     int choice1 = ui.promptNumeric(
-                                " 1) Play media \n" +
+                                "  1) Play media \n" +
                                     "  2) Add to watchlist \n" +
                                     "  3) Return to main menu");
                     switch (choice1) {
@@ -72,6 +76,10 @@ public class StreamingPlatform {
                         case 3:
                             mainMenu();
                             break;
+                        default:
+                            ui.displayMsg("Please choose between the options 1-3");
+                            mainMenu();
+                            break;
                     }
                 }
             }
@@ -81,7 +89,6 @@ public class StreamingPlatform {
             searchName();
         }
     }
-
 
 
     public void startMenu() {
@@ -99,13 +106,16 @@ public class StreamingPlatform {
         } else if (choice == 2) {
             registerUser();
             mainMenu();
+        } else {
+            ui.displayMsg("Please choose between the options 1 or 2");
+            startMenu();
         }
     }
 
     public void mainMenu() {
         String bold = "\u001B[1m";
         int choice = ui.promptNumeric(bold + "You have the following options: \n " +
-                "1) Search for a movie or serie \n " +
+                "1) Search for a movie or series \n " +
                 "2) Search by category \n " +
                 "3) See your saved watchlist \n " +
                 "4) See your list of watched media \n " +
@@ -165,7 +175,7 @@ public class StreamingPlatform {
                 String[] values = line.split(",");
 
                 if (values[0].equals(userName) && values[1].equals(password)) {
-                    ui.displayMsg("Welcome " + bold + userName+"!");
+                    ui.displayMsg("Welcome " + bold + userName + "!");
                     currentUser = new User(userName, password, Integer.parseInt(values[2]));
                     return true;
                 }
@@ -206,10 +216,8 @@ public class StreamingPlatform {
                     System.out.println("Skipping line due to insufficient data: " + line);
                     continue;
                 }
-
                 String name = values[0].trim();
                 String releaseYear = values[1].trim();
-
                 Set<String> categories = new HashSet<>(Arrays.asList(values[2].split(",")));
                 float rating = Float.parseFloat(values[3].trim().replace(",", "."));
                 ArrayList<Season> seasons = new ArrayList<>();
@@ -222,13 +230,8 @@ public class StreamingPlatform {
                             System.out.println("Skipping invalid season data: " + s);
                             continue;
                         }
-
                         int episodeCountNum = Integer.parseInt(episodeCount[1]);
-                        int[] episodeList = new int[episodeCountNum];
-                        for (int i = 0; i < episodeCountNum; i++) {
-                            episodeList[i] = i + 1;
-                        }
-                        seasons.add(new Season(episodeList));
+                        seasons.add(new Season(episodeCountNum));
                     }
                 }
 
@@ -244,50 +247,53 @@ public class StreamingPlatform {
 
 
 public void displaySavedMedia() {
-
         try {
             if (currentUser.savedMedia == null || currentUser.savedMedia.isEmpty()) {
-                System.out.println("\n---You have no saved media!--- \n");
+                System.out.println("\n---You have no played media!--- \n");
                 mainMenu();
             } else {
+                int counter = 1;
                 for (Media m : currentUser.savedMedia) {
-                    System.out.println(m);
+                    System.out.println(counter + ": " + m);
+                    counter++;
+                }
+                int choice1 = ui.promptNumeric("Which media would you like to choose?");
+                Media media = currentUser.savedMedia.get(choice1-1);
+                int choice2 = ui.promptNumeric("1) Play media \n" +
+                        "2) Remove from watchlist \n" +
+                        "3) Return to main menu");
+                switch (choice2) {
+                    case 1:
+                        if (media instanceof Movie) {
+                            playMovie((Movie) media);
+                            break;
+                        } else if (media instanceof Series) {
+                            int seasonChoice = ui.promptNumeric("Choose the season");
+                            int episodeChoice = ui.promptNumeric("Choose the episode");
+                            playSeries((Series) media, seasonChoice, episodeChoice);
+                            break;
+                        }
+                    case 2:
+                        removeMedia(media);
+                        break;
+                    case 3:
+                        mainMenu();
+                        break;
+                    default:
+                        System.out.println("Please choose between the options 1-3");
+                        break;
                 }
                 mainMenu();
-            }
-          /*  int choice = ui.promptNumeric("1) Play media \n" +
-                    "2) Remove from watchlist \n" +
-                    "3) Return to main menu");
-
-            switch (choice){
-                case 1:
-                    if (m instanceof Movie) {
-                        playMovie((Movie) m);
-                        break;
-                    }else if(m instanceof Series) {
-                        int seasonChoice = ui.promptNumeric("Choose the season");
-                        int episodeChoice = ui.promptNumeric("Choose the episode");
-                        playSeries((Series) m, seasonChoice, episodeChoice);
-                        break;
-                    };
-                case 2:
-                    removeMedia();
-
                 }
-           */
-
-        mainMenu();
         } catch (NullPointerException e) {
-            System.out.println("\n---Error: User or saved media is null!--- \n");
+            System.out.println("\n---Error: User or played media is null!--- \n");
         }
-
-
     }
 
 public void displayPlayedMedia() {
     try {
         if (currentUser.playedMedia == null || currentUser.playedMedia.isEmpty()) {
-            System.out.println("\n---You have no saved media!--- \n");
+            System.out.println("\n---You have no watched media!--- \n");
             mainMenu();
         } else {
             for (Media m : currentUser.playedMedia) {
@@ -296,31 +302,45 @@ public void displayPlayedMedia() {
             mainMenu();
         }
     } catch (NullPointerException e) {
-        System.out.println("\n---Error: User or saved media is null!--- \n");
+        System.out.println("\n---Error: User or watched media is null!--- \n");
     }
 }
 
 
-public void playMovie(Movie movie){
+    public void playMovie(Movie movie){
         currentUser.getPlayedMedia().add(movie);
-        ui.displayMsg("The media " + movie.getName() + " is now playing");
+        ui.displayMsg("The movie " + movie.getName() + " is now playing");
+        ui.promptText("Press 'Enter' to finish watching " + movie.getName());
         mainMenu();
     }
 
-public void playSeries(Series series, int season, int episode){
-        currentUser.getPlayedMedia().add(series);
-        ui.displayMsg("Episode " + episode + " from Season " + season + " of " + series.getName() + " is now playing");
-        mainMenu();
+    public void playSeries(Series series, int season, int episode){
+        if (season < 1 || episode < 1){
+            ui.displayMsg(series.getName() + " has no such episode");
+            mainMenu();
+        }
+        if (series.getSeasons().size() >= season && series.getSeasons().get(season-1).getEpisodes() >= episode){
+            currentUser.getPlayedMedia().add(series);
+            ui.displayMsg("Episode " + episode + " from Season " + season + " of " + series.getName() + " is now playing");
+            ui.promptText("Press 'Enter' to finish watching " + series.getName());
+            mainMenu();
+        }
+        else {
+            ui.displayMsg(series.getName() + " has no such episode");
+            mainMenu();
+        }
     }
 
-public void saveMovie(Movie movie){
+    public void saveMovie(Movie movie){
         currentUser.getSavedMedia().add(movie);
         ui.displayMsg(movie.getName() + " has been saved!");
+        mainMenu();
     }
 
     public void saveSeries(Series series){
         currentUser.getSavedMedia().add(series);
         ui.displayMsg(series.getName()+ " has been saved!");
+        mainMenu();
     }
 
 public void removeMedia(Media media){
